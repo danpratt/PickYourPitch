@@ -47,6 +47,13 @@ class PlaySoundsViewController: UIViewController {
         }
         
         setUserInterfaceToPlayMode(false)
+        checkExistingPitch()
+    }
+    
+    // Set the slider persistence value when we are about to leave this screen
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        setSliderValue()
     }
     
     // MARK: Set Interface
@@ -110,5 +117,36 @@ class PlaySoundsViewController: UIViewController {
         }
         
         audioPlayerNode.play()
+    }
+    
+    // MARK: - Persistence
+    
+    /**
+     Checks for an existing persistence float value representing the slider.
+    */
+    private func checkExistingPitch() {
+        if UserDefaults.standard.object(forKey: SliderValueKey) == nil {
+            setSliderValue()
+        } else {
+            loadSliderValue()
+        }
+    }
+    
+    /**
+     Sets the UserDefaults slider value
+     */
+    private func setSliderValue() {
+        let sliderPositionValue = sliderView.value
+        UserDefaults.standard.set(sliderPositionValue, forKey: SliderValueKey)
+        print("set value")
+    }
+    
+    /**
+     Loads slider value from UserDefaults and sets the slider to that value
+     */
+    private func loadSliderValue() {
+        let sliderPositionValue = UserDefaults.standard.float(forKey: SliderValueKey)
+        sliderView.value = sliderPositionValue
+        print("value loaded")
     }
 }
